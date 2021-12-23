@@ -28,6 +28,12 @@ variable "user_data_base64" {
   default     = null
 }
 
+variable "user_data_template" {
+  type        = string
+  default     = "user_data/amazon-linux.sh"
+  description = "User Data template to use for provisioning EC2 Bastion Host"
+}
+
 variable "instance_type" {
   type        = string
   description = "The type of the instance"

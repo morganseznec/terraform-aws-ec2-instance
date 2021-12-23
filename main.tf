@@ -109,14 +109,15 @@ resource "aws_iam_role" "default" {
 resource "aws_instance" "default" {
   #bridgecrew:skip=BC_AWS_GENERAL_31: Skipping `Ensure Instance Metadata Service Version 1 is not enabled` check until BridgeCrew supports conditional evaluation. See https://github.com/bridgecrewio/checkov/issues/793
   #bridgecrew:skip=BC_AWS_NETWORKING_47: Skiping `Ensure AWS EC2 instance is configured with VPC` because it is incorrectly flagging that this instance does not belong to a VPC even though subnet_id is configured.
-  count                                = local.instance_count
-  ami                                  = local.ami
-  availability_zone                    = local.availability_zone
-  instance_type                        = var.instance_type
-  ebs_optimized                        = var.ebs_optimized
-  disable_api_termination              = var.disable_api_termination
-  user_data                            = var.user_data
-  user_data_base64                     = var.user_data_base64
+  count                   = local.instance_count
+  ami                     = local.ami
+  availability_zone       = local.availability_zone
+  instance_type           = var.instance_type
+  ebs_optimized           = var.ebs_optimized
+  disable_api_termination = var.disable_api_termination
+  user_data = length(var.user_data_base64) > 0 ? var.user_data_base64 : templatefile("${path.module}/${var.user_data_template}", {
+    user_data = join("\n", var.user_data)
+  })
   iam_instance_profile                 = local.instance_profile
   instance_initiated_shutdown_behavior = var.instance_initiated_shutdown_behavior
   associate_public_ip_address          = var.associate_public_ip_address
