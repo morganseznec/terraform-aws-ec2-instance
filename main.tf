@@ -115,9 +115,8 @@ resource "aws_instance" "default" {
   instance_type           = var.instance_type
   ebs_optimized           = var.ebs_optimized
   disable_api_termination = var.disable_api_termination
-  user_data = length(var.user_data_base64) > 0 ? var.user_data_base64 : templatefile("${path.module}/${var.user_data_template}", {
-    user_data = join("\n", var.user_data)
-  })
+  user_data_base64        = var.user_data_base64 != null ? var.user_data_base64 : null
+  user_data = var.user_data != null ? templatefile("${path.root}/${var.user_data_template}", { user_data = join("\n", var.user_data) }) : null
   iam_instance_profile                 = local.instance_profile
   instance_initiated_shutdown_behavior = var.instance_initiated_shutdown_behavior
   associate_public_ip_address          = var.associate_public_ip_address
